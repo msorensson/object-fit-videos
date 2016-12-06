@@ -216,13 +216,19 @@ var objectFitVideos = function () {
     var running = false;
 
     var func = function () {
+      var evt;
       if (running) return;
 
       running = true;
       requestAnimationFrame(function () {
-        if (obj.dispatchEvent) {
-          obj.dispatchEvent(new CustomEvent(name));
+        try {
+          evt = new CustomEvent(name);
+        } catch(e) {
+          evt = document.createEvent('CustomEvent');
+          evt.initCustomEvent(name, true, true, false);
         }
+
+        obj.dispatchEvent(evt);
 
         running = false;
       });
